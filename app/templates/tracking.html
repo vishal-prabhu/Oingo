@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row no-margin-bot">
+        <div class="col m4">
+            <div class="row no-margin-bot">
+                <form class="col s12" action="" method="post">
+                    <div class="card-panel">
+                        <div class="row no-margin-bot">
+                            <h5 class="center-align">Admin: User location modifier</h5>
+                        </div>
+                        {{ form.hidden_tag() }}
+                        <div class="row no-margin-bot">
+                            <div class="input-field col s6">
+                                {{ form.date.label }}
+                                {{ form.date(class_='no-autoinit datepicker') }}
+                                {% for error in form.date.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="input-field col s6">
+                                {{ form.time.label }}
+                                {{ form.time(class_='no-autoinit timepicker') }}
+                                {% for error in form.time.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row no-margin-bot">
+                            <div class="input-field col s6">
+                                {{ form.latitude.label }}
+                                {{ form.latitude(placeholder="") }}
+                                {% for error in form.latitude.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                            <div class="input-field col s6">
+                                {{ form.longitude.label }}
+                                {{ form.longitude(placeholder="") }}
+                                {% for error in form.longitude.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row no-margin-bot">
+                            <div class="input-field col s12 m6 push-m3">
+                                {{ form.submit(class_='round_button blue btn max_width') }}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card-panel" style="height: 23.65rem; overflow-y: scroll">
+                        <table class="striped">
+                            <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for each_location in user.location_history.limit(10).all() %}
+                                <tr>
+                                    <td>{{ each_location.timestamp }}</td>
+                                    <td>{{ each_location.latitude }}</td>
+                                    <td>{{ each_location.longitude }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col m8">
+            <div class="card-panel">
+                <div id="map" style="height: 44.25rem; width: 100%"></div>
+                <script>
+                    let pointsarray = [];
+                    let notesarray = [];
+                    {% for each_location in user.location_history.limit(10).all() %}
+                        pointsarray.push(
+                            {
+                                latitude: {{ each_location.latitude | float }},
+                                longitude: {{ each_location.longitude | float }}
+                            }
+                        );
+                    {% endfor %}
+
+                    {% for each_note in notes %}
+                        notesarray.push(
+                            {
+                                id: '{{ each_note.id }}',
+                                content: '{{ each_note.content }}',
+                                url: '{{ url_for('note', note_id=each_note.id, _external=True) }}',
+                                latitude: {{ each_note.region.latitude | float}},
+                                longitude: {{ each_note.region.longitude | float}}
+                            }
+                        );
+                    {% endfor %}
+
+                    initTrackingMap(pointsarray, notesarray, '{{ url_for('static', filename='imgs/blue_marker.png') }}');
+                </script>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

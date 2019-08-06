@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row no-margin-bot">
+        <div class="col s12 m6 push-m3">
+            <div class="card horizontal">
+                <div class="card-image">
+                    <a href="{{ url_for('user', username=note.user.username) }}"><img src="{{ note.user.avatar(64) }}"></a>
+                </div>
+                <div class="card-stacked">
+                    <span style="padding-left: 0.5rem">
+                        {% if not note.is_public %}
+                            <span class="private_badge badge blue right">Private</span>
+                        {% endif %}
+                        <h5 class="no-margin-bot" style="margin-top: 0.25rem">
+                            <a class="black-text" href="{{ url_for('user', username=note.user.username) }}">
+                                <b>{{ note.user.first_name.capitalize() }} {{ note.user.last_name.capitalize() }}</b>
+                            </a>
+                        </h5>
+                        <span>
+                            <a class="blue-grey-text" href="{{ url_for('user', username=note.user.username) }}">
+                                @{{ note.user.username }}
+                            </a>
+                        </span>
+                    </span>
+                    <div class="card-content"
+                         style="padding-left: 0.85rem; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                        <blockquote><h4>{{ note.content }}</h4></blockquote>
+                    </div>
+                    {# -------------------------TAGS----------------------------- #}
+                    <span class="grey-text">Tags</span>
+                    <div class="card-action" style="padding: 0.5rem 0 0.2rem 0.5rem">
+                        <div class="row" style="margin: 0;">
+                            <div class="col s12" style="margin: 0;">
+                                {% for tag in note.tags %}
+                                    <a class="chip black-text" style="margin: 0 0.3rem 0.3rem 0;"
+                                       href="{{ url_for('find_notes_with_tag', tag_id=tag.id) }}">
+                                        {{ tag.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"></div>
+                    {# -------------------------RECURRENCE PATTERN----------------------------- #}
+                    <span class="grey-text">Recurrence Pattern</span>
+                    <div class="card-action" style="padding: 0.5rem 0 0.2rem 0.5rem">
+                        <div class="row" style="margin: 0;">
+                            <div class="col s12" style="margin: 0;">
+                                <div class="valign-wrapper">
+                                    <i class="material-icons">access_time</i>
+                                    <span style="padding-left: 0.25rem">
+                                    {{ note.pattern.first().start_time.strftime("%I:%M %p") }} to {{ note.pattern[0].end_time.strftime("%I:%M %p") }}
+                                </span>
+                                </div>
+                                {% if note.pattern.first().recurrence_type %}
+                                    <p>
+                                        Repeats every
+                                        {% if note.pattern.first().separation_count > 2 %}
+                                            {{ note.pattern.first().separation_count }}
+                                        {% elif note.pattern.first().separation_count == 2 %}
+                                            other
+                                        {% endif %}
+                                        {% if note.pattern.first().recurrence_type == 'daily' %}
+                                            <b>Day(s)</b>
+                                        {% elif note.pattern.first().recurrence_type == 'weekly' %}
+                                            <b>Week(s)</b> on
+                                        {% elif note.pattern.first().recurrence_type == 'monthly' %}
+                                            <b>Month(s)</b>
+                                        {% elif note.pattern.first().recurrence_type == 'yearly' %}
+                                            <b>Year(s)</b>
+                                        {% endif %}
+                                    </p>
+                                    {% if note.pattern.first().recurrence_type == 'weekly' %}
+                                        <div>
+                                            <div id="chip7" class="day center-align">S</div>
+                                            <div id="chip1" class="day center-align">M</div>
+                                            <div id="chip2" class="day center-align">T</div>
+                                            <div id="chip3" class="day center-align">W</div>
+                                            <div id="chip4" class="day center-align">T</div>
+                                            <div id="chip5" class="day center-align">F</div>
+                                            <div id="chip6" class="day center-align">S</div>
+                                        </div>
+                                        <script>
+                                            let day = $('#chip{{ note.pattern.first().day_of_week }}')[0];
+                                            day.classList.add('red', 'accent-2', 'white-text');
+                                        </script>
+                                        <div class="row"></div>
+                                    {% endif %}
+                                {% else %}
+                                    <span>Does not repeat</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# -------------------------LOCATION----------------------------- #}
+                    <span class="grey-text">Location</span>
+                    <div class="card-action" style="padding: 0">
+                        <div class="row" style="margin: 0;">
+                            <div class="col s12" style="margin: 0; padding: 0.5rem">
+                                <div id="map"></div>
+                                <script>
+                                    let latitude = {{ note.region.latitude | float }};
+                                    let longitude = {{ note.region.longitude | float }};
+                                    initMap(latitude, longitude);
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hide-on-med-and-up">
+                <div class="fixed-action-btn">
+                    <a href="#modal2"
+                       class="btn-floating waves-effect waves-light btn-large red modal-trigger"
+                       style="bottom: 1rem; right: 1rem; position: fixed"
+                       onclick="replytocomment('')">
+                        <i class=" large material-icons">edit</i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="hide-on-small-only">
+            <div class="col m1 push-m3">
+                <a href="#modal2"
+                   class="btn-floating waves-effect waves-light btn-large red modal-trigger"
+                   style="bottom: 1rem; position: fixed"
+                   onclick="replytocomment('')">
+                    <i class=" large material-icons">edit</i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row no-margin-bot">
+        <div class="col s12 m6 push-m3">
+            <div id="comments_panel" class="card-panel" style="padding: 1rem 0 0 0">
+                <h4 class="no-margin-top bot-border">Comments</h4>
+                {{ note.format_comments() | safe }}
+            </div>
+        </div>
+    </div>
+    <div class="row"></div>
+    <div class="row"></div>
+    <div class="row"></div>
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="row no-margin-bot">
+                    <div class="input-field col s12 no-margin-bot">
+                        {{ form.content.label }}
+                        {{ form.content(class_='materialize-textarea', **{'data-length': '150'}) }}
+                        {% for error in form.content.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                        <script>$('textarea#content').characterCounter();</script>
+                    </div>
+                </div>
+                {{ form.parent_id(class_='myhidden') }}
+                <div class="row no-margin-bot">
+                    <div class="input-field col s12 m4 push-m4">
+                        {{ form.submit(class_='round_button blue btn max_width') }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

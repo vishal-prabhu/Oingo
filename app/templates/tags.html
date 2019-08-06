@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col s12 m4 push-m4">
+            <h4 class="center-align">Notes tagged with {{ tag_name.name }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m4 push-m4">
+            {% for note in notes %}
+                {% include '_mini_note.html' %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

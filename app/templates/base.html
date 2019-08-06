@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"
+          media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3-5NKkqb4wTxvWiEguk-987cvqsHjgZg"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+            $('.timepicker').timepicker({twelveHour: false});
+            $('.chips-placeholder').chips({placeholder: 'Enter a tag', secondaryPlaceholder: ' '});
+            M.AutoInit();
+        });
+    </script>
+    <style>
+        html {
+            background: url({{ url_for('static', filename='imgs/background.svg') }}) no-repeat center fixed;
+            background-size: cover;
+            height: 100%;
+        }
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body class="background_image">
+{% if current_user.is_authenticated %}
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="{{ url_for('index') }}" class="brand-logo">Oingo</a>
+                <a data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+{#                    <li><a href="">Friends</a></li>#}
+                    <li><a href="{{ url_for('create_filter') }}">Filters</a></li>
+                    <li><a href="{{ url_for('change_status') }}">Status</a></li>
+                    <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+{#    <ul class="sidenav" id="mobile-demo">#}
+{##}
+{#        <img class="circle responsive-img" style="border: 2px solid #000000;" src="{{ current_user.avatar(96) }}">#}
+{#        <li><a href="sass.html">Sass</a></li>#}
+{#        <li><a href="badges.html">Components</a></li>#}
+{#        <li><a href="collapsible.html">Javascript</a></li>#}
+{#        <li><a href="mobile.html">Mobile</a></li>#}
+{#    </ul>#}
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for each_message in messages %}
+                {% with %}
+                    {% set message_type, message = each_message.split('$') %}
+                    {% if message_type == 'success' %}
+                        {% set classes = 'green white-text rounded' %}
+                    {% elif message_type == 'failure' %}
+                        {% set classes = 'red white-text' %}
+                    {% else %}
+                        {% set classes = 'rounded' %}
+                    {% endif %}
+                    <script> M.toast({html: '{{ message }}', classes: '{{ classes }}'}); </script>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+{% block content %}
+{% endblock %}
+</body>
+</html>

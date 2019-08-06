@@ -1,0 +1,107 @@
+.no-margin-bot {
+    margin-bottom: 0 !important;
+}
+
+.no-margin-top {
+    margin-top: 0 !important;
+}
+
+.max_width {
+    width: 100% !important;
+}
+
+span.badge.private_badge {
+    font-weight: 300;
+    font-size: 0.8rem;
+    color: #fff;
+    background-color: #26a69a;
+    border-radius: 2px;
+}
+
+.round_button {
+    border-radius: 16px !important;
+}
+
+.day {
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 32px;
+    padding: 0;
+    border-radius: 16px;
+    background-color: #e4e4e4;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+#map {
+    border: 1px solid #bdbdbd;
+    height: 20rem;
+    width: 100%;
+}
+
+.user_friend {
+    display: inline-block;
+    min-height: 64px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 32px;
+    padding: 0 12px;
+    border-radius: 32px;
+    border: 2px solid #000000;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+}
+
+.user_friend > img {
+    float: left;
+    margin: -0.05rem 8px 0 -15px;
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    border: 2.5px solid #000000;
+}
+
+.no-border {
+    border: 0 !important;
+}
+
+.myhidden {
+    display: none !important;
+}
+
+.top-border {
+    border-top: 5px solid slategrey !important;
+}
+
+.bot-border {
+    border-bottom: 2px solid slategrey !important;
+}
+
+.comment {
+    background-color: #FFFFFF !important;
+    margin-left: 1rem;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-left: 3px solid #b0bec5;
+    border-left-color: #ff6d00;
+    border-top: 1px solid #b0bec5;
+    border-bottom: 1px solid #b0bec5;
+}
+
+.comment > .comment {
+    border-left-color: #ff9100;
+}
+
+.comment > .comment > .comment {
+    border-left-color: #ffab40;
+}
+
+.comment > .comment > .comment > .comment {
+    border-left-color: #ffd180;
+}

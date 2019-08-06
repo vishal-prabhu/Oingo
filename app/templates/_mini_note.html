@@ -1,0 +1,39 @@
+<div class="row no-margin-bot">
+    <div class="col s12">
+        <div class="card horizontal">
+            <div class="card-image">
+                <a href="{{ url_for('user', username=note.user.username) }}"><img src="{{ note.user.avatar(64) }}"></a>
+            </div>
+            <div class="card-stacked">
+                <span style="padding-left: 0.5rem">
+                    {% if not note.is_public %}
+                        <span class="private_badge badge blue right">Private</span>
+                    {% endif %}
+                    <h5 class="no-margin-bot" style="margin-top: 0.25rem">
+                        <a class="black-text" href="{{ url_for('user', username=note.user.username) }}">
+                            <b>{{ note.user.first_name | capitalize }} {{ note.user.last_name | capitalize }}</b>
+                        </a>
+                    </h5>
+                    <span>
+                        <a class="blue-grey-text" href="{{ url_for('user', username=note.user.username) }}">
+                            @{{ note.user.username }}
+                        </a>
+                    </span>
+                </span>
+                <div class="card-content"
+                     style="padding-left: 0.85rem; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <p>{{ note.content }}</p>
+                </div>
+                <div class="card-action" style="padding: 0.5rem 0 0.2rem 0.5rem">
+                    <div class="valign-wrapper">
+                        <a href="{{ url_for('note', note_id=note.id) }}"><i
+                                class="light-blue-text material-icons">forum</i></a>
+                        <a href="{{ url_for('note', note_id=note.id) }}"><i class="light-blue-text material-icons">info_outline</i></a>
+                        <a href="{{ url_for('user', username=note.user.username) }}"><i
+                                class="light-blue-text   material-icons">person_outline</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

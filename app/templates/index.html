@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col s12 m4 push-m4">
+            {% for note in notes %}
+                {% include '_mini_note.html' %}
+            {% endfor %}
+        </div>
+        <div class="hide-on-small-only">
+            <div class="col m4 push-m4">
+                <a href="{{ url_for('new_note') }}" class="btn-floating waves-effect waves-light btn-large red" style="bottom: 1rem; position: fixed">
+                    <i class="large material-icons">edit</i>
+                </a>
+            </div>
+        </div>
+        <div class="hide-on-med-and-up">
+            <div class="fixed-action-btn">
+                <a href="{{ url_for('new_note') }}" class="btn-floating waves-effect waves-light btn-large red">
+                    <i class="large material-icons">edit</i>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

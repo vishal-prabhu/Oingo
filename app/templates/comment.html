@@ -1,0 +1,21 @@
+<div class="comment">
+    <div>
+        <a class="blue-grey-text"
+           href="{{ username_url }}">
+            @{{ username }}
+        </a>
+    </div>
+    <a href="#modal2" class="right modal-trigger" onclick="replytocomment({{ comment_id }})">
+        <i class="material-icons">
+            reply
+        </i>
+    </a>
+    <div class="row no-margin-top no-margin-bot">
+        <div style="padding: 0.25rem 0 0 1rem">
+            <p class="no-margin-bot no-margin-top">
+                {{ comment_content }}
+            </p>
+        </div>
+    </div>
+    {{ repliles | safe }}
+</div>

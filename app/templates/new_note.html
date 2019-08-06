@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <form class="col s12 m4 push-m4" action="" method="post" onsubmit="insert_tag_into_input()">
+            <div class="card-panel">
+                <div class="row no-margin-bot">
+                    <h4 class="center-align">Post a Note</h4>
+                </div>
+                {{ form.hidden_tag() }}
+                <div class="row no-margin-bot top-border">
+                    <div class="input-field col s12 no-margin-bot">
+                        {{ form.content.label }}
+                        {{ form.content(class_='materialize-textarea', **{'data-length': '150'}) }}
+                        {% for error in form.content.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                        <script>$('textarea#content').characterCounter();</script>
+                    </div>
+                </div>
+                <div class="row no-margin-bot">
+                    <div class="input-field col s12 no-margin-top">
+                        <div class="no-autoinit chips chips-placeholder"></div>
+                        {{ form.tags(class_='myhidden') }}
+                        {% for error in form.tags.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row no-margin-bot">
+                    <div class="col s4">
+                        <label>
+                            {{ form.is_private() }}
+                            <span>Private</span>
+                        </label>
+                    </div>
+                    <div class="col s4">
+                        <div id="shared_with_friends_div" class="myhidden">
+                            <label>
+                                {{ form.is_shared_with_friends() }}
+                                <span>Share with friends</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <label>
+                            {{ form.is_commentable() }}
+                            <span>Comments</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row"></div>
+                <div class="row top-border no-margin-bot">
+                    <div class="col s9">
+                        <a class="waves-effect waves-light btn-small modal-trigger" href="#modal1">map</a>
+                        <div id="locationdiv" class="input-field inline">
+                            {{ form.region_name.label }}
+                            {{ form.region_name(size=15) }}
+                            {% for error in form.region_name.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.radius.label }}
+                        {{ form.radius() }}
+                        {% for error in form.radius.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row no-margin-bot myhidden">
+                    <div class="input-field col s6">
+                        {{ form.latitude.label }}
+                        {{ form.latitude() }}
+                        {% for error in form.latitude.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <div class="input-field col s6">
+                        {{ form.longitude.label }}
+                        {{ form.longitude() }}
+                        {% for error in form.longitude.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row top-border"></div>
+                <div class="row no-margin-bot">
+                    <div class="input-field col s6">
+                        {{ form.start_date.label }}
+                        {{ form.start_date(class_='no-autoinit datepicker') }}
+                        {% for error in form.start_date.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <div class="input-field col s6">
+                        {{ form.end_date.label }}
+                        {{ form.end_date(class_='no-autoinit datepicker') }}
+                        {% for error in form.end_date.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row no-margin-bot">
+                    <div class="input-field col s6">
+                        {{ form.start_time.label }}
+                        {{ form.start_time(class_='no-autoinit timepicker') }}
+                        {% for error in form.start_time.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <div class="input-field col s6">
+                        {{ form.end_time.label }}
+                        {{ form.end_time(class_='no-autoinit timepicker') }}
+                        {% for error in form.end_time.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row no-margin-bot">
+                    <div class="col s3">
+                        <label>
+                            {{ form.is_recurring() }}
+                            <span>Repeats</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="repeatmenu" class="myhidden">
+                    <div class="row no-margin-bot">
+                        <div class="col s6">
+                            Repeats every
+                            <div class="input-field inline no-margin-bot">
+                                {{ form.separation_count.label }}
+                                {{ form.separation_count(size=1) }}
+                            </div>
+                            {% for error in form.separation_count.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </div>
+                        <div class="input-field col s6 no-margin-bot">
+                            {{ form.recurrence_type.label }}
+                            {{ form.recurrence_type() }}
+                            {% for error in form.recurrence_type.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id='day_of_week_div' class="row no-margin-bot myhidden">
+                        <div class="col s8 push-s4 m8 push-m6">
+                            on
+                            <div class="input-field inline no-margin-bot no-margin-top">
+                                {{ form.day_of_week.label }}
+                                {{ form.day_of_week() }}
+                            </div>
+                            {% for error in form.day_of_week.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id='month_of_year_div' class="row no-margin-bot myhidden">
+                        <div class="col s8 push-s4 m8 push-m6">
+                            of
+                            <div class="input-field inline no-margin-bot no-margin-top">
+                                {{ form.month_of_year.label }}
+                                {{ form.month_of_year() }}
+                            </div>
+                            {% for error in form.month_of_year.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row top-border"></div>
+                <div class="row no-margin-bot">
+                    <div class="input-field col s12 m4 push-m4">
+                        {{ form.submit(class_='round_button blue btn max_width') }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="modal1" class="no-autoinit modal">
+        <div class="modal-content">
+            <div id="map" style="height: 25rem"></div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat"
+               onclick="enable_location_field()">Cancel</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat"
+               onclick="disable_location_field()">Agree</a>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.modal').modal({
+                onOpenStart: mapinput
+            });
+            document.getElementById('recurrence_type').addEventListener('change', function () {
+                let recurrence_type = document.getElementById('recurrence_type');
+                let day_of_week_div = document.getElementById('day_of_week_div');
+                let month_of_year_div = document.getElementById('month_of_year_div');
+                if (['weekly', 'monthly', 'yearly'].includes(recurrence_type.value)) {
+                    day_of_week_div.classList.remove('myhidden');
+                    if (['yearly'].includes(recurrence_type.value)) {
+                        month_of_year_div.classList.remove('myhidden')
+                    } else if (['monthly'].includes(recurrence_type.value)) {
+                        month_of_year_div.classList.add('myhidden');
+                    }
+                } else {
+                    day_of_week_div.classList.add('myhidden');
+                    month_of_year_div.classList.add('myhidden');
+                }
+            });
+            document.getElementById('is_recurring').addEventListener('change', function () {
+                let is_recurring = document.getElementById('is_recurring');
+                let repeatmenu = document.getElementById('repeatmenu');
+                if (is_recurring.checked) {
+                    repeatmenu.classList.remove('myhidden')
+                } else {
+                    repeatmenu.classList.add('myhidden')
+                }
+            });
+            document.getElementById('is_private').addEventListener('change', function () {
+                let is_recurring = document.getElementById('is_private');
+                let sharing_chk_box = document.getElementById('shared_with_friends_div');
+                if (is_recurring.checked) {
+                    sharing_chk_box.classList.remove('myhidden')
+                } else {
+                    sharing_chk_box.classList.add('myhidden')
+                }
+            });
+        });
+    </script>
+{% endblock %}

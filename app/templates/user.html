@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row no-margin-bot">
+        <div class="col s12 m6 push-m3">
+            <div class="card-panel">
+                <div class="row no-margin-bot">
+                    <div class="col s4">
+                        <img class="circle responsive-img" style="border: 2px solid #000000;"
+                             src="{{ user.avatar(96) }}">
+                    </div>
+                    <div class="col s8">
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row"></div>
+                        <div class="row no-margin-bot">
+                            {% if current_user != user %}
+                                {% if current_user in user.get_friends('accepted') %}
+                                    <a class="right red white-text waves-effect waves-light btn-flat round_button"
+                                       href="{{ url_for('delete_friend', username=user.username) }}">
+                                        Un-friend
+                                    </a>
+                                {% elif current_user in user.get_friends_origins('pending') or current_user in user.get_friends('blocked') %}
+                                    <a class="right grey disabled white-text waves-effect waves-light btn-flat round_button">
+                                        Friend Request Sent
+                                    </a>
+                                {% elif current_user in user.get_friends_others('pending') %}
+                                    <a class="right blue white-text waves-effect waves-light btn-flat round_button"
+                                       href="{{ url_for('accept_friend_request', username=user.username) }}">
+                                        Accept
+                                    </a>
+                                    <a class="right red white-text waves-effect waves-light btn-flat round_button"
+                                       style="margin-right: 1rem"
+                                       href="{{ url_for('block_friend_request', username=user.username) }}">
+                                        Block
+                                    </a>
+                                {% else %}
+                                    <a class="right light-blue white-text waves-effect waves-light btn-flat round_button"
+                                       href="{{ url_for('send_friend_request', username=user.username) }}">
+                                        Send Friend Request
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-margin-bot">
+                    <div class="col s12">
+                        <h5 class="no-margin-bot">
+                            <b>{{ user.first_name | capitalize }} {{ user.last_name | capitalize }}</b>
+                        </h5>
+                        <span class="blue-grey-text">@{{ user.username }}</span>
+                    </div>
+                </div>
+                <div class="row no-margin-bot" style="padding-top: 0.5rem;">
+                    <div class="col s12 blue-grey-text">
+                        <div class="valign-wrapper">
+                            <i class="material-icons">date_range</i><span
+                                style="padding-left: 0.25rem">Joined {{ user.sign_up_timestamp.strftime("%B") }} {{ user.sign_up_timestamp.year }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row no-margin-bot">
+        <div class="col s12 m6 push-m3">
+            <div class="card-panel" style="padding: 0">
+                <div class="card-tabs">
+                    <ul class="tabs tabs-fixed-width">
+                        <li class="tab"><a class="active" href="#notes_tab">Notes</a></li>
+                        <li class="tab"><a href="#friends_tab">Friends</a></li>
+                        {% if user == current_user %}
+                            <li class="tab"><a href="#friends_requests_tab">Friend Requests</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-content">
+        <div class="row">
+            <div class="col s12 m6 push-m3">
+                <div id="notes_tab">
+                    {% for note in user.notes %}
+                        {% if note.is_public or current_user == user or current_user in user.get_friends() %}
+                            {% include '_mini_note.html' %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div id="friends_tab">
+                    {% for each_user in user.get_friends() %}
+                        <a href="{{ url_for('user', username=each_user.username) }}">
+                            <div class="user_friend" style="">
+                                <img class="circle responsive-img"
+                                     src="{{ each_user.avatar(64) }}">
+
+                                <b class="black-text"
+                                   style="font-size: 1.25rem">{{ each_user.first_name | capitalize }} {{ each_user.last_name | capitalize }}</b>
+                                <div class="blue-grey-text" style="margin-top: -16px">@{{ each_user.username }}</div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                {% if user == current_user %}
+                    <div id="friends_requests_tab">
+                        {% for each_user in user.get_friends_origins('pending') %}
+                            <a href="{{ url_for('user', username=each_user.username) }}">
+                                <div class="user_friend" style="">
+                                    <img class="circle responsive-img"
+                                         src="{{ each_user.avatar(64) }}">
+
+                                    <b class="black-text"
+                                       style="font-size: 1.25rem">{{ each_user.first_name | capitalize }} {{ each_user.last_name | capitalize }}</b>
+                                    <div class="blue-grey-text" style="margin-top: -16px">
+                                        @{{ each_user.username }}</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
